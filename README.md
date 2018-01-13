@@ -7,7 +7,8 @@ status: draft
 it's like npm, except the registry of packages (package metadata + tarballs)
 lives entirely on secure scuttlebutt
 
-this means there is no central authority controlling packages!
+this means there is no central authority controlling packages! it also means you
+can use npm in offline environments.
 
 ## prerequisites
 
@@ -16,7 +17,67 @@ this means there is no central authority controlling packages!
 2. have [scuttlebot](https://github.com/ssbc/scuttlebot) installed, with `sbot
    server` running successfully on your machine
 
-## ssb-npm-registry
+## two approaches
+
+From here, there are two ways of using ssb-npm. Both are equivalent; it's just a
+preferred interface / setup choice.
+
+### 1. ssb-npm command
+
+This is, in the author's opinion, the easiest way to use ssb-npm. It means
+running the `ssb-npm` command when you want to use ssb as your registry, and
+running regular `npm` when you want to use npmjs.org as your registry. For
+example
+
+```
+$ ssb-npm install
+```
+
+to install all dependencies inside of a module directory. This works because the
+`ssb-npm` package bundles the `ssb-npm-registry` inside of it.
+
+The `ssb-npm` package is published to `ssb-npm` itself! So we can use the `sbot`
+command to query your scuttlebutt node to find the latest version:
+
+```
+$ sbot messagesByType npm-packages | grep -A 1 npm:ssb-npm: | grep -o '&.*sha256' | tail -n 1
+```
+
+Try running the commands incrementally to get a feel for what's going on here
+(e.g. first `sbot messagesByType npm-packages` then add the `| grep -A 1
+npm:ssb-npm:` part, and so forth. What this is doing is querying your local ssb
+database for all published npm packages (the `npm-packages` message type), and
+then narrowing it down to the `ssb-npm` package, and finally narrowing that down
+to the latest version.
+
+The result will be something like
+`&SItHiY5GLYh+LTcxqgIolBpAWzFjybG1bk3rQ3JZikw=.sha256`. This is a blob
+identifier, which is a block of binary data. In this case, since it's a
+published npm module, it's actually a `.tar.gz` tarball. We can use `sbot` to
+download it:
+
+```
+$ sbot blobs.want '&SItHiY5GLYh+LTcxqgIolBpAWzFjybG1bk3rQ3JZikw=.sha256'
+$ sbot blobs.get '&SItHiY5GLYh+LTcxqgIolBpAWzFjybG1bk3rQ3JZikw=.sha256' > ssb-npm.tar.gz
+```
+
+This tells our sbot node we're interested in the blob, and then retrieve its
+contents. From here we can tell our vanilla `npm` program to install the package
+globally right from the tarball:
+
+```
+```
+
+
+### 2. ssb-npm-registry plugin
+
+This approach is running the ssb-npm-registry plugin on your local scuttlebot
+node. Interaction with ssb-npm means using the normal `npm` command but with the
+`--registry` switch. So an `npm install` would look instead like
+
+```
+$ npm install --registry=http://localhost:8043/
+```
 
 ssb-npm-registry is an npm registry, not unlike the one running on npmjs.org,
 except this registry uses secure scuttlebutt to find packages that were
