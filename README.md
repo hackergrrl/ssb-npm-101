@@ -16,6 +16,16 @@ this means there is no central authority controlling packages!
 2. have [scuttlebot](https://github.com/ssbc/scuttlebot) installed, with `sbot
    server` running successfully on your machine
 
+## workaround: big blobs
+
+ssb-npm-registry depends on `sodium-native` which is larger than `sbot`'s
+default maximum blob size. To get around this, you can either
+
+1. edit your ssb config (usually `~/.ssb/config`) to include `{"blobs":{"max":10000000}}`, or
+2. run `sbot` as `sbot server --blobs.max 10000000`
+
+to be able to get the blob for `sodium-native`.
+
 ## ssb-npm-registry
 
 ssb-npm-registry is an npm registry, not unlike the one running on npmjs.org,
