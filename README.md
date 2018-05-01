@@ -58,13 +58,10 @@ of the package:
 $ sbot blobs.want '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256'
 $ sbot blobs.get '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256' >
 ssb-npm-registry.tar.gz
-```
 
-now untar the tarball and put it in your `~/.ssb/node_modules` folder so `sbot`
-can find it:
+$ tar xvzf ssb-npm-registry.tar.gz
 
-```
-mv package ~/.ssb/node_modules
+$ mv package ~/.ssb/node_modules/ssb-npm-registry
 ```
 
 you'll need to add the entry to your `"plugins"` section of your `~/.ssb/config`
