@@ -71,6 +71,15 @@ file:
   "ssb-npm-registry": true
 ```
 
+Assuming you had an empty ~/.ssb/config before, and added the `blobs: max` part from before, this would now look like this:
+
+```
+   {
+     "blobs": {"max": 10000000},
+     "plugins": {"ssb-npm-registry": true}
+   }
+```
+
 now you can restart `sbot server`.
 
 ## ssb-npm
