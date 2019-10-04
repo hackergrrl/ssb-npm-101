@@ -13,16 +13,16 @@ this means there is no central authority controlling packages!
 
 1. have npm 5 or newer (relies on `package-lock.json`; won't work with earlier
    npm versions); can do `npm install -g npm@latest`
-2. have [scuttlebot](https://github.com/ssbc/scuttlebot) installed, with `sbot
-   server` running successfully on your machine
+2. have [scuttlebot](https://github.com/ssbc/ssb-server) installed, with
+   `ssb-server start` running successfully on your machine
 
 ## workaround: big blobs
 
-ssb-npm-registry depends on `sodium-native` which is larger than `sbot`'s
+ssb-npm-registry depends on `sodium-native` which is larger than `ssb-server`'s
 default maximum blob size. To get around this, you can either
 
 1. edit your ssb config (usually `~/.ssb/config`) to include `{"blobs":{"max":10000000}}`, or
-2. run `sbot` as `sbot server --blobs.max 10000000`
+2. run `ssb-server` as `ssb-server start --blobs.max 10000000`
 
 to be able to get the blob for `sodium-native`.
 
@@ -38,10 +38,10 @@ the `ssb-npm` command just like the regular `npm` command to install packages.
 
 first, we'll pull down the blob for the latest version of `ssb-npm-registry`.
 you can find out what the latest blob is by searching `npm-packages` packages
-with `sbot`:
+with `ssb-server`:
 
 ```
-$ sbot messagesByType npm-packages | grep -C 1 ssb-npm-registry
+$ ssb-server messagesByType npm-packages | grep -C 1 ssb-npm-registry
 ```
 
 you'll see something like this near the bottom of the output:
@@ -51,12 +51,12 @@ you'll see something like this near the bottom of the output:
   "link": "&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256",
 ```
 
-you can now use `sbot` to WANT and then GET that blob, which is the npm tarball
-of the package:
+you can now use `ssb-server` to WANT and then GET that blob, which is the npm
+tarball of the package:
 
 ```
-$ sbot blobs.want '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256'
-$ sbot blobs.get '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256' >
+$ ssb-server blobs.want '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256'
+$ ssb-server blobs.get '&2afFvk14JEObC047kYmBLioDgMfHe2Eg5/gndSjPQ1Q=.sha256' >
 ssb-npm-registry.tar.gz
 
 $ tar xvzf ssb-npm-registry.tar.gz
@@ -71,7 +71,7 @@ file:
   "ssb-npm-registry": true
 ```
 
-now you can restart `sbot server`.
+now you can restart `ssb-server start`.
 
 ## ssb-npm
 
